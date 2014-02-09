@@ -30,10 +30,7 @@ class Afbeeldingen extends CI_Controller {
         if (!$this->data['loggedin']) {
             redirect('/inloggen', 'refresh');
         }
-        // paging...
-        
-        
-         
+           
         $category_id = '';
         $image_status = '';
         $count_cat =0;
@@ -59,16 +56,16 @@ class Afbeeldingen extends CI_Controller {
             $totalrows =$this->data['image_count'][$count_cat]['count'];
         }
         
+        // paging...
         $this->load->library("pagination");
         $config = array();
         $config["base_url"] = base_url() . "mijn-fotos/".$category_slug;
         $config["total_rows"] = $totalrows;
-        $config["per_page"] = 8;
+        $config["per_page"] = 12;
         $config["uri_segment"] = 3;
         $this->pagination->initialize($config);
         $page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
-        
-        
+                
         
         $this->data['images'] = $this->image_model->get_my_images($this->data['user']['id'],$category_id, $image_status,$config["per_page"],$page);
         $this->data['links'] = $this->pagination->create_links();

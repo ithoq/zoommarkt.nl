@@ -19,6 +19,23 @@
  *
  */
 	define('ENVIRONMENT', 'development');
+        
+/*
+ *---------------------------------------------------------------
+ * CUSTOM INI SETTINGS
+ *---------------------------------------------------------------
+ * 
+ * http://www.php.net/manual/en/apc.configuration.php#ini.apc.ttl
+ * 
+ */
+        
+ini_set('apc.ttl', '7200');
+ini_set('memory_limit', '512M');
+
+if( ! ini_get('date.timezone') )
+{
+   date_default_timezone_set('Europe/Amsterdam');
+}         
 /*
  *---------------------------------------------------------------
  * ERROR REPORTING
@@ -27,10 +44,7 @@
  * Different environments will require different levels of error reporting.
  * By default development will show errors but testing and live will hide them.
  */
-if( ! ini_get('date.timezone') )
-{
-   date_default_timezone_set('Europe/Amsterdam');
-} 
+
 $local_path = '';        
 if (defined('ENVIRONMENT'))
 {

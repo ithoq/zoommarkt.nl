@@ -19,10 +19,7 @@ class Afbeeldingen extends CI_Controller {
     }
 
     function index() {
-        if (!$this->data['loggedin']) {
-            redirect('/inloggen', 'refresh');
-        }
-        $this->_render_page('templates/profile', $this->data);
+        redirect('/profiel', 'refresh');
     }
 
     function my_images($category_slug='alles') {

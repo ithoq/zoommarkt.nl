@@ -23,6 +23,7 @@ class Profiel extends CI_Controller {
         if (!$this->data['loggedin']) {
             redirect('/inloggen', 'refresh');
         }
+        $this->data['image_count'] = $this->image_model->count_images($this->data['user']['id']);
         $this->_render_page('templates/profile', $this->data);
     }
 

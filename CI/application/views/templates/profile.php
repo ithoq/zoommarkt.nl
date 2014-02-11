@@ -17,6 +17,9 @@
         <div class="tabs-content">
             <div class="content active">
                 <p>Hieronder staan de gegevens zoals je bij ons bekend bent.</p>
+                <?php foreach ($image_count as $count){
+                 echo $count['name'] . " : ". $count['count']. "<br>";
+                 } ?>
             </div>
         </div>
     </div>

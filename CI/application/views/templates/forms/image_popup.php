@@ -8,50 +8,27 @@
 <script src="/js/jquery.js"></script> 
 <script src="/js/foundation.min.js"></script>
 </head>
-<body><?php
+<body id="imgbody">
+<style>
+    .top_nav_img{height:32px;width:100%;background-color:#333;font-size: 0.8em;padding:8px 8px;}
+    .top_nav_img a {;color:#fff;}
+</style>
+    <?php
         $attributes = array('data-abide' => '', 'novalidate' => 'novalidate', 'id' => 'imagepop');
         echo form_open(uri_string(), $attributes);
         ?>
 <div class="row">
-   <div class="small-8 columns"> 
+   <div class="small-6 columns"> 
+           <div class="top_nav_img"><a href="javascript:void(0)" onclick="$('#imgbody').hide();window.parent.parentCloser()">[sluiten]</a></div>
        
-<div class="off-canvas-wrap">
-  <div class="inner-wrap" style="background-color:#333">
-      <nav class="tab-bar">
-      <section class="left-small">
-        <a class="left-off-canvas-toggle menu-icon" ><span></span></a>
-      </section>
-      <section class="middle tab-bar-section">
-        <h1 class="title">Afbeelding</h1>
-      </section>
-    </nav>
-     <!-- Off Canvas Menu -->
-    <aside class="left-off-canvas-menu">
-        <!-- whatever you want goes here -->
-         <ul>
-            <li><label> </label></li
-            <li><a href="#">Kliks: 32</a></li>
-            <li><a href="#">Gestemd: 2</a></li>
-            <li><a href="#">Verkocht: 1</a> </li>
-            <li><a href="#">Gepubliceerd: <?php echo $image['createddate']; ?></a></li>
-            <li><a href="#">Groote: <?php echo $image['file_size']; ?> kB</a></li>
-            <li><a href="#">Afmetingen: <?php echo $image['image_width']; ?>x<?php echo $image['image_height']; ?></a></li>
-        </ul>        
-    </aside>
-   <!-- main content goes here -->
-    <img src="<?php echo base_url() . getImage($image['file_name'], 600, 400 ); ?>">
-  <!-- close the off-canvas menu -->
-  </div>
-</div>
-       
-	
-    </div>
-   <div class="small-4 columns">  
+           <img src="<?php echo base_url() . getImage($image['file_name'], $image['user_path'], 600, 640 ); ?>">
+      </div>
+   <div class="small-6 columns">  
            <div class="row">
                 <div class="small-12 columns">
-                    <label for="title">Titel</label>
-                    <input type="text" name="title" id="title" value="<?php if (isset($image['title'])) echo htmlspecialchars($image['title']); ?>" placeholder="Naam van de afbeelding">
-                  
+                    <label for="title">Titel <small>verplicht</small></label>
+                    <input type="text" name="title" id="title" value="<?php if (isset($image['title'])) echo htmlspecialchars($image['title']); ?>" placeholder="Naam van de afbeelding" required pattern="alpha_numeric">
+                    <small class="error">U moet een titel opgeven</small>
                 </div>
             </div>
            <div class="row">
@@ -78,7 +55,7 @@
             </div>  
        <div class="row">
                 <div class="small-12 columns">
-                    <button type="submit" id="upload-file"  class="small button  radius custom-narrow">Verstuur</button>
+                    <button type="submit" id="upload-file"  class="small button  radius custom-narrow form-btn">Verstuur</button>
                 </div>
             </div>   
     
@@ -89,6 +66,9 @@
         <?php echo form_close(); ?>
 <script>
 $(document).foundation();
+ $(document).ready(function() {
+    $('#imgbody').show('fast'); 
+ });
 </script>
 </body>
 </html>

@@ -53,3 +53,46 @@ $(document).ready(function() {
         fnSubmit(true);
     });
 });
+
+
+    function switchView(view, speed) {
+        var fader = 250;
+        if (speed == 'fast') {
+            fader = 0;
+        }
+        if (view == 'listview') {
+            $('.imagelist.gridview').fadeOut(fader, function() {
+                $('.imagelist.listview').fadeIn(fader);
+            });
+            $('#gridbutton').removeClass('active');
+            $('#listbutton').addClass('active');
+            $('#message-box').hide();
+        }
+        if (view == 'gridview') {
+            $('.imagelist.listview').fadeOut(fader, function() {
+                $('.imagelist.gridview').fadeIn(fader);
+            });
+            $('#gridbutton').addClass('active');
+            $('#listbutton').removeClass('active');
+            $('#message-box').show();
+        }
+        $.cookie("switchview", view);
+    }
+    function editImage(id) {
+        if ( $(window).scrollTop() > 350 ){
+            $('html, body').animate({scrollTop: $(".topnav").offset().top+180 }, 700);
+        }
+        var framesrc = '/afbeeldingen/edit_image/' + id;
+        $('#ei_frame').attr("src", framesrc);
+        
+    }
+        
+    function parentCloser(){
+        $( ".form-btn" ).trigger( "click" );
+    }
+
+    function deleteImage(id) {
+        // roep de delete functie aan, geef een id door aan het formulier in het modal
+        $('#del_image').val(id);
+        $('#remove_image').foundation('reveal', 'open');
+    }

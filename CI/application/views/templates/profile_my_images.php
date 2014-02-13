@@ -1,8 +1,18 @@
 <style>
-    #sortable-list		{ padding:0; }
-    #sortable-list li	{ cursor:move;}
-    #infotxt  { background:#666;color:#fff; padding:8px; text-align: center }
+    .top_nav_img{width:100%;background-color:#333; opacity: 0.8;font-size: 0.8em;padding:3px 5px;}
+    .top_nav_img a {;color:#fff;}
+    .visible-img{ margin-top:20px;}
+    .visible-img img{ margin-bottom:40px;}
+    .clearing-assembled.clearing-blackout,
+    .clearing-assembled .clearing-container .carousel, 
+    .clearing-assembled .clearing-container .visible-img{ 
+        background:#000 
+    }
+    .clearing-assembled .clearing-container .carousel {height:20px; }
 </style>
+
+
+
 <form id="dd-form" action="<?php echo $_SERVER['REQUEST_URI']; ?>" method="post">
     <div class="row">
         <div class="large-12 columns">
@@ -10,8 +20,8 @@
             <?php if (isset($message)) { ?>
                 <div id="infoMessage"><?php echo $message; ?> </div>
             <?php } ?>
-        </div>       
-    </div> 
+        </div>
+    </div>
     <div class="row">
         <div class="small-8 columns">
             <dl class="tabs">
@@ -22,115 +32,154 @@
             </dl>
         </div>
         <div class="small-4 columns">
-            <dl class="sub-nav right" style="margin:35px 20px 0px 0px">
+            <dl class="sub-nav right" style="margin:0px 20px 0px 0px">
                 <dt>Weergave:</dt>
-                <dd id="gridbutton" class="active"><a href="javascript:void(0)" onclick="switchView('gridview','fast')">Grid</a></dd>
-                <dd id="listbutton"><a href="javascript:void(0)" onclick="switchView('listview','fast')">Lijst</a></dd>
+                <dd id="gridbutton" class="active"><a href="javascript:void(0)" onclick="switchView('gridview', 'fast')">Grid</a></dd>
+                <dd id="listbutton"><a href="javascript:void(0)" onclick="switchView('listview', 'fast')">Lijst</a></dd>
+            </dl>
+            <dl class="sub-nav right" style="margin:0px 20px 0px 0px">
+                <dt>Aantal:</dt>
+                <dd id="gridbutton" class="active"><a href="javascript:void(0)" onclick="switchList('12')">12</a></dd>
+                <dd id="listbutton"><a href="javascript:void(0)" onclick="switchList('24')">24</a></dd>
+                <dd id="listbutton"><a href="javascript:void(0)" onclick="switchList('36')">36</a></dd>
+                <dd id="listbutton"><a href="javascript:void(0)" onclick="switchList('48')">48</a></dd>
             </dl>
         </div>
     </div>
     <div class="row">
         <div class="small-8 columns">
-            <p>Hieronder staan je foto's. 
-                
-                <?php 
-                      if (isset($image_count['99']) ) { ?>
-                   <a href="/mijn-fotos/nieuw">Je hebt nog foto's die niet vindbaar zijn.</a>  
-                   Deze foto's zijn uitgegrijsd in het overzicht. Je kan ze vindbaar maken door er een titel, een categorie en tags aan toe te voegen.
-                <?php } ?>   
+            <p>Hieronder staan je foto's.
+                <?php if (isset($image_count['99'])) { ?>
+                    <a href="/mijn-fotos/nieuw">Je hebt nog foto's die niet vindbaar zijn.</a>
+                    Deze foto's zijn uitgegrijsd in het overzicht. Je kan ze vindbaar maken door er een titel, een categorie en tags aan toe te voegen.
+                <?php } ?>
             </p>
         </div>
     </div>
-</div>
-<div class="row">
-    <div class="small-8 columns">
-        <div id="message-box"> 
-            <div id="infotxt">Sorteer de foto's door ze te verslepen. Foto's bovenaan de lijst worden eerder gevonden.</div>
-            <input type="submit" style="display:none;height:32px;padding-top:10px;margin:0px" id="savesort" name="do_submit" value="Sla sortering op" class="button small radius expand" />
-        </div>
-
-    </div>
-    <div class="small-4 columns">
-        <select name="category" onchange="document.location=this[this.selectedIndex].value" >
-            <option value="/mijn-fotos"> Alle categorieen </option>
-            <?php foreach ($categories as $category) { ?>
-                <option value="/mijn-fotos/<?php echo $category['slug']; ?>" <?php if (isset($category_data['category_id'])) if ($category['category_id'] == $category_data['category_id']) echo "selected" ;?>><?php echo $category['name']; ?></option>
-            <?php } ?>
-        </select>
-    </div>
-</div>
-<div class="imagelist gridview"  style="display:none">
-    <div class="row">
-
+    <div class="row collapse" style="overflow:hidden;min-height:640px;">
+        <div class="form-btn" style="display:none"></div>
         <div class="small-12 columns">
-            <ul id="sortable-list" class="small-block-grid-2  medium-block-grid-3 large-block-grid-4">
-                <?php
-                $order = array();
-                foreach ($images as $image) {
-                    $order[] = $image['image_id'];
-                    ?>
-                    <li title="<?php echo $image['image_id']; ?>" <?php if ($image['image_stat'] == 1) {
-                        echo 'class="closed"';
-                    } ?>>  
-                        <div class="mythumb" onclick="editImage('<?php echo $image['image_id']; ?>')" style="background-image: url(<?php echo base_url() . getImage($image['file_name'], 300, 300); ?>);"></div>
-                    </li>     
-<?php } ?>
-            </ul>
-        </div>  
-    </div>  
-</div>
-<div class="imagelist listview" style="display:none"> 
-    <?php
-    foreach ($images as $image) {
-        ?>
-        <div class="row<?php if ($image['image_stat'] == 1) {
-            echo " closed";
-        } ?>" style="padding-bottom:20px;" >
-            <div class="small-1 columns">
-                <div class="mythumb" onclick="editImage('<?php echo $image['image_id']; ?>')" style="width:70px;height:70px;background-image: url(<?php echo base_url() . getImage($image['file_name'], 100, 100); ?>);"></div>
-            </div>
-            <div class="small-3 columns">
-                <p><strong><?php if (empty($image['title'])) {
-                    echo "geen titel";
-                } else {
-                    echo $image['title'];
-                }; ?></strong><br>
-    <?php if (empty($image['description'])) {
-        echo "geen beschrijving";
-    } else {
-        echo $image['description'];
-    }; ?>
-                </p>
-            </div>
-            <div class="small-2 columns">
-                3 keer bekeken
-            </div>
-            <div class="small-2 columns">
-                0 keer gekocht
-            </div>
-            <div class="small-2 columns">
-    <?php if ($image['image_stat'] == 1) {
-        echo "nog niet vindbaar";
-    } else {
-        echo "openbaar";
-    }; ?><br>
-            </div>
-            <div class="small-1 columns">
-                <div class="right" ><a class="small button radius alert custom-narrow" href="javascript:void(0)" onclick="deleteImage('<?php echo $image['image_id']; ?>')" >Delete</a></div>
-            </div>
-        </div>   
-<?php } ?>
+            <nav class="pushy pushy-left" style="padding-top:50px;">
+                <iframe src="about:blank" name="ei_frame" width="100%" marginwidth="0" height="620" marginheight="0" scrolling="no" frameborder="0" id="ei_frame"></iframe>
+            </nav>
+            <div id="container">
 
-</div>
+                <div class="row">
+                    <div class="small-8 columns">
+                        <div id="message-box" class="">
+                            <div id="infotxt">Sorteer de foto's door ze te verslepen. Foto's bovenaan de lijst worden eerder gevonden.</div>
+                            <input type="submit" style="display:none;height:32px;padding-top:10px;margin:0px" id="savesort" name="do_submit" value="Sla sortering op" class="button small radius expand" />
+                        </div>
+                    </div>
+                    <div class="small-4 columns">
+                        <select name="category" onchange="document.location = this[this.selectedIndex].value" style="width:294px">
+                            <option value="/mijn-fotos/alles"> Alle categorieen </option>
+                            <?php foreach ($categories as $category) { ?>
+                                <option value="/mijn-fotos/<?php echo $category['slug']; ?>" <?php if (isset($category_data['category_id'])) if ($category['category_id'] == $category_data['category_id']) echo "selected";  ?>><?php echo $category['name']; ?></option>
+                            <?php } ?>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="imagelist gridview"  style="display:none">
+                    <div class="row">
 
-<p><?php echo $links; ?></p>
-<input type="hidden" name="category_id" id="category_id" value="<?php if (isset($category_data['category_id'])) echo $category_data['category_id']; ?>" />    
-<input type="hidden" name="sort_order" id="sort_order" value="<?php echo implode(',', $order); ?>" />
+                        <div class="small-12 columns">
+                            <ul id="sortable-list" class="small-block-grid-2  medium-block-grid-3 large-block-grid-4">
+                                <?php
+                                $order = array();
+                                foreach ($images as $image) {
+                                    $order[] = $image['image_id'];
+                                    ?>
+                                    <li title="<?php echo $image['image_id']; ?>" <?php
+                                   if ($image['category_id'] == 99) {
+                                        echo 'class="closed"';
+                                    }
+                                    ?>  rel="imgid_<?php echo $image['image_id']; ?>">
+                                        <div class="mythumb" style="background-image: url(<?php echo base_url() . getImage($image['file_name'], $image['user_path'], 300, 300); ?>);">
+                                            <div class="top_nav_img">
+                                                <a href="javascript:void(0)" onclick="editImage('<?php echo $image['image_id']; ?>')" class="edit-btn">[edit]</a>
+                                                <div style="float:right"><a href="javascript:void(0)" onclick="$('#zm-<?php echo $image['image_id'] ;?>').trigger('click') ">[zoom]</a></div>
+                                              </div>
+                                        </div>
+                                    </li>
+                                <?php } ?>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="imagelist listview" style="display:none">
+                    <?php
+                    foreach ($images as $image) {
+                        ?>
+                        <div class="list-row row<?php
+                        if ($image['category_id'] == 99) {
+                            echo " closed";
+                        }
+                        ?>" style="padding:10px 0px " rel="imgid_<?php echo $image['image_id']; ?>">
+                            <div class="small-2 columns">
+                                <div style="width:8em;height:6em;overflow:hidden;" class="edit-btn" onclick="editImage('<?php echo $image['image_id']; ?>')">
+                                    <img src="<?php echo base_url() . getImage($image['file_name'], $image['user_path'], 300, 300); ?>">
+                                  </div>
+                            </div>
+                            <div class="small-4 columns">
+                                   <div rel="imgtitle_<?php echo $image['image_id']; ?>" style="font-weight:bold">
+                                    <?php
+                                        if (empty($image['title'])) {
+                                            echo "geen titel";
+                                        } else {
+                                            echo $image['title'];
+                                        };
+                                        ?></div>
+                                        <div rel="imgdesc_<?php echo $image['image_id']; ?>">
+                                    <?php
+                                    if (empty($image['description'])) {
+                                        echo "geen beschrijving";
+                                    } else {
+                                        echo $image['description'];
+                                    };
+                                    ?></div>
+                               
+                            </div>
+                             <div class="small-2 columns">
+                                3 keer bekeken<br>
+                                0 keer gekocht
+                            </div>
+                            <div class="small-2 columns" rel="imgsearch_<?php echo $image['image_id']; ?>">
+                                <?php
+                                if ($image['image_stat'] == 1) {
+                                    echo "nog niet vindbaar";
+                                } else {
+                                    echo "openbaar";
+                                };
+                                ?><br>
+                            </div>
+                            <div class="small-1 columns">
+                                <div class="right" ><a class="small button radius alert custom-narrow" href="javascript:void(0)" onclick="deleteImage('<?php echo $image['image_id']; ?>')" >Delete</a></div>
+                            </div>
+                        </div>
+                    <?php } ?>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+<ul class="clearing-thumbs" data-clearing style="display:none">
+    <?php foreach ($images as $image) { ?>
+     <li><a  style="display:none"  id="zm-<?php echo $image['image_id'] ;?>" href="<?php echo base_url() . getImage($image['file_name'], $image['user_path'], 1280, 900); ?>">
+             <img data-caption="<?php echo htmlentities($image['title'],ENT_QUOTES) ;?>" src="<?php echo base_url() . getImage($image['file_name'], $image['user_path'], 300, 300); ?>"/>
+         </a></li>
+    <?php } ?>
+</ul>
+    
+    <p><?php echo $links; ?></p>
+    <input type="hidden" name="category_id" id="category_id" value="<?php if (isset($category_data['category_id'])) echo $category_data['category_id']; ?>" />
+    <input type="hidden" name="sort_order" id="sort_order" value="<?php echo implode(',', $order); ?>" />
+
 
 </form>
 <div id="update_image" class="reveal-modal large" data-reveal style="width:800px">
     <a id="close_save" class="close-reveal-modal">&#215;</a>
-    <iframe src="about:blank" name="ei_frame" width="90%" marginwidth="0" height="400" marginheight="0" scrolling="no" frameborder="0" id="ei_frame"></iframe>
 </div>
 
 <div id="remove_image" class="reveal-modal tiny" data-reveal>
@@ -141,14 +190,19 @@
     </div>
     <div class="row">
         <div class="small-12 columns">
-        <?php echo form_open('/afbeeldingen/delete_image'); ?>
-                <input type="hidden" name="image_id" id="del_image" value="" />
-                <input type="hidden" name="category_path" value="<?php if (isset($category_data['slug'])) { echo $category_data['slug']; } else { echo "alles";};?>" />
-                
-                <a href="#" class="small button radius" onClick="$('.close-reveal-modal').trigger('click')">Annuleer</a>
-                <button type="submit" id="submitknop"  class="small button alert radius right">Verwijder</button>
-               <?php echo form_hidden($csrf); ?>
-               <?php echo form_close(); ?>
+            <?php echo form_open('/afbeeldingen/delete_image'); ?>
+            <input type="hidden" name="image_id" id="del_image" value="" />
+            <input type="hidden" name="category_path" value="<?php
+            if (isset($category_data['slug'])) {
+                echo $category_data['slug'];
+            } else {
+                echo "alles";
+            };
+            ?>" />
+            <a href="#" class="small button radius" onClick="$('.close-reveal-modal').trigger('click')">Annuleer</a>
+            <button type="submit" id="submitknop"  class="small button alert radius right">Verwijder</button>
+            <?php echo form_hidden($csrf); ?>
+            <?php echo form_close(); ?>
         </div>
     </div>
     <a class="close-reveal-modal">&#215;</a>
@@ -156,52 +210,27 @@
 
 
 <script>
-    
-    function deleteImage(id){
-	// roep de delete functie aan, geef een id door aan het formulier in het modal
-	$('#del_image').val(id);
-	$('#remove_image').foundation('reveal', 'open');
-}
-  $(document).ready(function() {
-      if ($.cookie("switchview")){
-          switchView($.cookie("switchview"),'instant');
-      } else {
-           switchView('gridview');
-      }
-  });
-    
-    
-    function switchView(view,speed) {
-        var fader = 250;
-        if (speed == 'fast') {
-             fader = 0;
+    $(document).ready(function() {
+        if ($.cookie("switchview")) {
+            switchView($.cookie("switchview"), 'instant');
+        } else {
+            switchView('gridview');
         }
-        if (view == 'listview') {
-            $('.imagelist.gridview').fadeOut(fader, function() {
-                $('.imagelist.listview').fadeIn(fader);
-            });
-            $('#gridbutton').removeClass('active');
-            $('#listbutton').addClass('active');
-            $('#message-box').hide();
+    });
+     $(document).ready(function() {
+        if ($.cookie("switchlist")) {
+           // switchList($.cookie("switchlist"));
+        } else {
+            //switchList('12');
         }
-        if (view == 'gridview') {
-            $('.imagelist.listview').fadeOut(fader, function() {
-                $('.imagelist.gridview').fadeIn(fader);
-            });
-            $('#gridbutton').addClass('active');
-            $('#listbutton').removeClass('active');
-            $('#message-box').show();
-        }
-        $.cookie("switchview",view);
-    }
-    function editImage(id) {
-        var framesrc = '/afbeeldingen/edit_image/' + id;
-        $('#ei_frame').attr("src", framesrc);
-        $('#update_image').foundation('reveal', 'open');
-    }
-
-    /* when the DOM is ready */
-
-    
+    });
+function updateRel(id,title,desc){
+    $("div[rel=imgtitle_"+id+"]").text(title);
+    $("div[rel=imgdesc_"+id+"]").html(desc);
+    $("div[rel=imgsearch_"+id+"]").text('openbaar');
+    $("div[rel=imgid_"+id+"]").removeClass('closed');
+    $("li[rel=imgid_"+id+"]").removeClass('closed');
+ }
 
 </script>
+<script src="/js/pushy.js"></script>

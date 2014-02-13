@@ -57,7 +57,7 @@
             <a href="/profiel" class="small button nav-button dropdown" data-dropdown="profile">Mijn profiel</a> 
             <ul id="profile" class="f-dropdown" data-dropdown-content>
                 <li><a href="/profiel">Profiel</a></li>
-                <li><a href="/mijn-fotos">Mijn foto's</a></li>
+                <li><a href="/mijn-fotos/alles">Mijn foto's</a></li>
                 <li><a href="/foto-toevoegen">Foto's toevoegen</a></li>
                 <li><a href="/aanpassen">Profiel wijzigen</a></li>
                 <li><a href="/wachtwoord-veranderen">Wachtwoord veranderen</a></li>

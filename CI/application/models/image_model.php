@@ -51,11 +51,14 @@ class Image_model extends CI_Model {
             $image_stat = $this->db->escape($image_stat);
             $and =  "AND image_stat = {$image_stat}";
         }
+        // TODO: kan eenvoudiger....
         if (empty($category_id)){     
             $query = $this->db->query("SELECT * FROM images"
-                    . " WHERE user_id = {$userid}"
+                    . " LEFT JOIN images_categories "
+                    . " ON images_categories.image_id = images.image_id"
+                    . " WHERE images.user_id = {$userid}"
                     . " {$and}"
-                    . " ORDER BY sortorder"
+                    . " ORDER BY images.sortorder"
                     . " LIMIT {$limit}"
                     . " OFFSET {$start}");
         } else {

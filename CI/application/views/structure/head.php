@@ -10,6 +10,7 @@ if (isset($css_files)) {
     }
 }
 ?><link rel="stylesheet" href="/css/foundation.css" />
+<!-- link rel="stylesheet" href="/css/foundation-icons.css" -->
 <link rel="stylesheet" href="/css/style.css" />
 <script src="/js/modernizr.js"></script>
 <script src="/js/jquery.js"></script> 

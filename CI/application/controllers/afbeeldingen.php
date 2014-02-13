@@ -100,12 +100,14 @@ class Afbeeldingen extends CI_Controller {
 
         $this->load->library('upload');
 
+        $userdirs = str_split(str_pad( $this->data['user']['id'], 6, '0', STR_PAD_LEFT), 2);
         $image_upload_folder = FCPATH . '/uploads';
-
-        if (!file_exists($image_upload_folder)) {
-            mkdir($image_upload_folder, DIR_WRITE_MODE, true);
+        foreach ($userdirs as $userdir){
+            $image_upload_folder =  $image_upload_folder . '/'.$userdir;
+            if (!file_exists($image_upload_folder)) {
+                mkdir($image_upload_folder, DIR_WRITE_MODE, true);
+            }
         }
-
         $this->upload_config = array(
             'upload_path' => $image_upload_folder,
             'allowed_types' => 'png|jpg|jpeg',
@@ -124,6 +126,7 @@ class Afbeeldingen extends CI_Controller {
             echo json_encode($file_info);
             $file_info['user_id'] = $this->data['user']['id'];
             $file_info['image_stat'] = '1';
+            $file_info['user_path'] = implode('/',$userdirs);
             $this->image_model->create($file_info);
         }
       
@@ -166,14 +169,15 @@ class Afbeeldingen extends CI_Controller {
             $image_data = array(
                 'image_id' => $id,
                 'user_id' => $this->data['user']['id'],
-                'title' => $this->input->post('title'),
-                'description' => $this->input->post('description'),
-                'category_id' => $this->input->post('category_id'),
+                'title' => $this->input->post('title', TRUE),
+                'description' => $this->input->post('description', TRUE),
+                'category_id' => $this->input->post('category_id', TRUE),
                 'org-category_id' => $this->data['image']['category_id'],
                 'image_stat' => 2
             );
-            $retval = $this->image_model->update($image_data);
-            
+           $this->data['image_data'] = $image_data;
+            $this->data['retval'] = $this->image_model->update($image_data);
+            $this->load->view('/templates/forms/image_popup_success', $this->data);
             
         } else {
             // $this->data['image'] = $this->security->xss_clean($this->input->post());
